@@ -7,17 +7,29 @@ body {
   width:100vw;
   margin:0;
   box-sizing: border-box;
+  display:flex;
+  background-color:black;
 
 }
 #gameDiv {
-  width: calc(70% - 0.9rem);
+  flex: 7;
+  min-width:28rem;
+  background-color:black;
 }
 #extraDiv {
-  width: calc(30% - 0.9rem);
+  flex: 3;
+  min-width:12rem;
+  min-height:20rem;
 }
 div {
   border: 1px solid black;
   margin: 0.3rem;
-  display: inline-block;
-  height: calc(100% - 0.6rem);
+  background-color:white;
+}
+#canvas {
+  aspect-ratio:16/9;
+  max-height:100%;
+  max-width:100%;
+  border: 2px solid white;
+  cursor:none;
 }
