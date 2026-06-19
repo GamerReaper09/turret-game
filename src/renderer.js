@@ -34,6 +34,8 @@ const ctx = canvas.getContext("2d");
 const scoreCounter = document.getElementById("score");
 let score = 0;
 
+let alive = true;
+
 const turret = {
   x:960,
   y:540,
@@ -51,44 +53,50 @@ let projectiles = [];
 let enemies = [];
 
 for (let i = 0; i < 5; i++) {
-  enemies.push({
-    x:Math.random()*1920,
-    y:Math.random()*1080,
-    radius:25,
-    dead:false,
-  });
+  spawnEnemy()
 };
 
-function update() {
-  for (let i = 0; i < projectiles.length; i++) {
-    if (projectiles[i].dead) continue;
-    projectiles[i].x += projectiles[i].dx * projectiles[i].speed;
-    projectiles[i].y += projectiles[i].dy * projectiles[i].speed;
-    if (!(projectiles[i].x > -100 && projectiles[i].x < 2020)) {
-      projectiles[i].dead = true;
-    };
-    if (!(projectiles[i].y > -100 && projectiles[i].y < 1180)) {
-      projectiles[i].dead = true;
-    };
 
-    for (let j = 0; j < enemies.length; j++) {
-      if(collision(enemies[j],projectiles[i])) {
-        enemies[j].dead = true;
-        projectiles[i].dead = true;
+
+function update() {
+  //Projectile logic
+  for (const projectile of projectiles) {
+    projectile.x += projectile.dx * projectile.speed;
+    projectile.y += projectile.dy * projectile.speed;
+    if (projectile.x < -100 || projectile.x > 2020 || projectile.y < -100 || projectile.y > 1180) {projectile.dead = true;};
+  }
+  //Enemy logic
+  for (const enemy of enemies) {
+    enemy.x -= enemy.dx*enemy.speed;
+    enemy.y -= enemy.dy*enemy.speed;
+    const xDist = enemy.x - turret.x;
+    const yDist = enemy.y - turret.y;
+    if (xDist*xDist+yDist*yDist < 85*85) {
+      alive = false;
+      document.querySelector("#canvas").style.cursor = "default"
+    };
+  }
+  //Collision check
+  for (let p = 0; p < projectiles.length; p++) {
+    for (let e = 0; e < enemies.length; e++) {
+      if(collision(enemies[e],projectiles[p])) {
+        enemies[e].dead = true;
+        projectiles[p].dead = true;
         console.log("Dead");
         break;
       }
     }
   }
+  //Score
   for (let i = 0; i < enemies.length; i++) {
     if (enemies[i].dead) {
       score += 1;
       scoreCounter.textContent = score;
     };
   };
+  //Collision cleanup
   enemies = enemies.filter(e => !e.dead);
   projectiles = projectiles.filter(p => !p.dead);
-
 }
 
 function render() {
@@ -99,12 +107,23 @@ function render() {
   ctx.arc(turret.x,turret.y,30,0,Math.PI*2);
   ctx.fill();
 
+  //Game over circle
+  ctx.fillStyle = "white";
+  ctx.beginPath();
+  ctx.arc(turret.x,turret.y,60,0,Math.PI*2);
+  ctx.arc(turret.x,turret.y,55,0,Math.PI*2,true);
+  ctx.fill();
+  ctx.fillStyle = "red"
+
   //Turret pipe
   ctx.save();
   ctx.translate(turret.x,turret.y);
   ctx.rotate(mouse.angle);
   ctx.fillRect(0,-10,70,20);
   ctx.restore();
+
+  
+  
 
   //Projectiles
   for(let i = 0; i < projectiles.length; i++) {
@@ -132,6 +151,7 @@ function render() {
 };
 
 function loop() {
+  if (!alive) return;
   update();
   render();
   requestAnimationFrame(loop);
@@ -143,6 +163,23 @@ function collision(e,p) {
   const collisionDist = e.radius + p.radius;
   return xDist*xDist + yDist*yDist <= collisionDist*collisionDist;
 };
+
+function spawnEnemy() {
+  let x = Math.random()*1920;
+  let y = Math.random()*1080;
+  let angle = Math.atan2(y-turret.y,x-turret.x);
+  
+  enemies.push({
+    x:x,
+    y:y,
+    radius:25,
+    dead:false,
+    dx:Math.cos(angle),
+    dy:Math.sin(angle),
+    speed:1,
+  });
+  setTimeout(() => {spawnEnemy();},2000);
+}
 
 canvas.addEventListener("mousemove", (e) => {
   const rect = canvas.getBoundingClientRect();
@@ -162,7 +199,7 @@ canvas.addEventListener("mousedown", (e) => {
     y:turret.y+50*dy,
     dx:dx,
     dy:dy,
-    speed:2,
+    speed:3,
     radius:10,
     dead:false,
   });
