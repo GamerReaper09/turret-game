@@ -31,7 +31,9 @@ import './index.css';
 const canvas = /** @type {HTMLCanvasElement}*/ (document.getElementById("canvas"));
 const ctx = canvas.getContext("2d");
 const gameOverDiv = document.getElementById("gameOverDiv");
+const gameOverScore = document.getElementById("gameOverScore");
 const scoreCounter = document.getElementById("score");
+
 
 const turret = {
   x:960,
@@ -46,21 +48,25 @@ const mouse = {
   yRel:0,
 };
 
-let score,alive,waveSize,waveCd,projectiles,enemies
+let score,alive,waveSize,waveCd,projectiles,enemies,prevWave,time
 
 
 
 function initialize() {
-  gameOverDiv.hidden = "true"
+  gameOverDiv.hidden = true;
   score = 0;
   alive = true;
   waveSize = 5;
   waveCd = 5000;
+  time = performance.now()
+  prevWave = time-4000;
+  
 
   projectiles = [];
   enemies = [];
+  scoreCounter.textContent = score;
+
   loop()
-  spawnEnemy()
 }
 
 function update() {
@@ -78,6 +84,7 @@ function update() {
     const yDist = enemy.y - turret.y;
     if (xDist*xDist+yDist*yDist < 85*85) {
       alive = false;
+      gameOverScore.textContent = score;
       gameOverDiv.hidden=false;
     };
   }
@@ -98,6 +105,12 @@ function update() {
       scoreCounter.textContent = score;
     };
   };
+  //Enemy spawn
+  time = performance.now();
+  if (time - prevWave >= waveCd) {
+    prevWave = time;
+    spawnEnemy();
+  }
   //Collision cleanup
   enemies = enemies.filter(e => !e.dead);
   projectiles = projectiles.filter(p => !p.dead);
@@ -207,7 +220,6 @@ function spawnEnemy() {
     });
   };
   waveSize += 1;
-  setTimeout(() => {spawnEnemy();},waveCd);
 }
 
 canvas.addEventListener("mousemove", (e) => {
