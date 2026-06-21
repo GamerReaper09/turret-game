@@ -32,4 +32,36 @@ div {
   max-width:100%;
   border: 2px solid white;
   cursor:none;
+  z-index:2;
+}
+#gameOverDiv {
+  position:absolute;
+  width:calc(100% - 1.4rem);
+  height:calc(100% - 1.4rem);
+  background-color:gray;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+}
+#gameOverDiv[hidden] {
+  display:none;
+}
+#gameOverDiv h1 {
+  font-size:10rem;
+  color:white;
+  background-color:black;
+  border:solid black 1rem;
+  border-radius:1rem;
+}
+#gameOverDiv button {
+  height:5rem;
+  width:15rem;
+  border:solid rgb(8, 97, 13) 4px;
+  border-radius:1rem;
+}
+#gameOverDiv button:hover {
+  background-color:rgb(5, 58, 8);
+  cursor:pointer;
+  color:white;
 }

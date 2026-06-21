@@ -30,11 +30,8 @@ import './index.css';
 
 const canvas = /** @type {HTMLCanvasElement}*/ (document.getElementById("canvas"));
 const ctx = canvas.getContext("2d");
-
+const gameOverDiv = document.getElementById("gameOverDiv");
 const scoreCounter = document.getElementById("score");
-let score = 0;
-
-let alive = true;
 
 const turret = {
   x:960,
@@ -49,14 +46,22 @@ const mouse = {
   yRel:0,
 };
 
-let projectiles = [];
-let enemies = [];
+let score,alive,waveSize,waveCd,projectiles,enemies
 
-for (let i = 0; i < 5; i++) {
+
+
+function initialize() {
+  gameOverDiv.hidden = "true"
+  score = 0;
+  alive = true;
+  waveSize = 5;
+  waveCd = 5000;
+
+  projectiles = [];
+  enemies = [];
+  loop()
   spawnEnemy()
-};
-
-
+}
 
 function update() {
   //Projectile logic
@@ -73,7 +78,7 @@ function update() {
     const yDist = enemy.y - turret.y;
     if (xDist*xDist+yDist*yDist < 85*85) {
       alive = false;
-      document.querySelector("#canvas").style.cursor = "default"
+      gameOverDiv.hidden=false;
     };
   }
   //Collision check
@@ -82,7 +87,6 @@ function update() {
       if(collision(enemies[e],projectiles[p])) {
         enemies[e].dead = true;
         projectiles[p].dead = true;
-        console.log("Dead");
         break;
       }
     }
@@ -165,20 +169,45 @@ function collision(e,p) {
 };
 
 function spawnEnemy() {
-  let x = Math.random()*1920;
-  let y = Math.random()*1080;
-  let angle = Math.atan2(y-turret.y,x-turret.x);
-  
-  enemies.push({
-    x:x,
-    y:y,
-    radius:25,
-    dead:false,
-    dx:Math.cos(angle),
-    dy:Math.sin(angle),
-    speed:1,
-  });
-  setTimeout(() => {spawnEnemy();},2000);
+  if (!alive) return;
+  for (let i = 0; i < waveSize; i++) {
+    let x,y;
+    let side = Math.floor(Math.random()*4)
+    switch (side) {
+      case 0:
+        x = 0;
+        y = Math.random()*1080;
+        break;
+      case 1:
+        y = 0;
+        x = Math.random()*1920;
+        break;
+      case 2:
+        x = 1920;
+        y = Math.random()*1080
+        break;
+      case 3:
+        y = 1080;
+        x = Math.random()*1920
+        break;
+      default:
+        console.log(side)
+        throw new Error("Somehow the spawn enemy side was not 0-3")
+    };
+    let angle = Math.atan2(y-turret.y,x-turret.x);
+
+    enemies.push({
+      x:x,
+      y:y,
+      radius:25,
+      dead:false,
+      dx:Math.cos(angle),
+      dy:Math.sin(angle),
+      speed:1,
+    });
+  };
+  waveSize += 1;
+  setTimeout(() => {spawnEnemy();},waveCd);
 }
 
 canvas.addEventListener("mousemove", (e) => {
@@ -205,4 +234,6 @@ canvas.addEventListener("mousedown", (e) => {
   });
 });
 
-loop()
+document.getElementById("restartBtn").addEventListener("click",initialize);
+
+initialize()
