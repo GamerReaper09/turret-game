@@ -7,5 +7,5 @@ Controls are:
 
 Although the controls are that simple it does require pretty good speed to be able to multitask shooting and purchasing upgrades from the store.
 
-
+Also for some reason my node and electron forge were absolutely bugged so I was not able to build after many attempts. But if you want to try to make a build yourself it is just with the npm run make command.
 
