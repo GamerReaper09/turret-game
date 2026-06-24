@@ -10,6 +10,7 @@ body {
   display:flex;
   background-color:black;
   overflow:hidden;
+  user-select:none;
 
 }
 #gameDiv {
@@ -94,4 +95,29 @@ div {
 @keyframes gameOverTextGradient {
   from {background-position:0% 0%;}
   to {background-position:200% 0%;}
+}
+#extraDiv p {
+  margin:4px;
+  padding:1px;
+}
+#shop {
+  width:calc(100% - calc(0.6rem + 4px));
+  height:50%;
+  display:grid;
+  grid-template-columns:calc(100% / 3) calc(100% / 3) calc(100% / 3);
+  background-color:gray;
+}
+#shop div {
+  background-color:rgb(255, 255, 255);
+  transition:background-color 200ms;
+  border-radius:6px;
+  margin:4px;
+  cursor:pointer;
+}
+#shop div:hover {
+  background-color:rgb(167, 167, 167);
+}
+.slot h1 {
+  font-size:1rem;
+  margin:4px;
 }

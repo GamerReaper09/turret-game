@@ -3,7 +3,6 @@
   <head>
     <meta charset="UTF-8" />
     <title>Turret game</title>
-
   </head>
   <body>
     <div id="gameDiv">
@@ -11,6 +10,41 @@
     </div>
     <div id="extraDiv">
       <p>Score: <var id="score">0</var></p>
+      <p>Cash: <var id="cashCounter">0</var></p>
+      <p>Next wave in: <var id="nextWave">0</var> seconds </p>
+      <div id="shop">
+        <div class="slot" data-slot="1">
+          <h1>Bullet speed</h1>
+          <p>Current speed: <var id="speedCounter">0</var></p>
+          <p class="cost">Cost: <var id="cost1Counter">0</var></p>
+        </div>
+        <div class="slot" data-slot="2">
+         <h1>Cash bonus</h1>
+         <p>Current bonus: <var id="cashBonusCounter">0</var></p>
+         <p>Cost: <var id="cost2Counter">0</var></p>
+        </div>
+        <div class="slot" data-slot="3">
+          <h1>Bullet size</h1>
+          <p>Current size: <var id="sizeCounter">0</var></p>
+          <p>Cost: <var id="cost3Counter">0</var></p>
+        </div>
+        <div class="slot" data-slot="4">
+          <h1>Enemy slowness</h1>
+          <p>Current speed: <var id="enemySpeedCounter">0</var></p>
+          <p>Cost: <var id="cost4Counter">0</var></p>
+        </div>
+        <div class="slot" data-slot="5">
+          <h1>Multishot</h1>
+          <p>Shoot 3 projectiles</p>
+          <p>Cost: <var id="cost5Counter">0</var></p>
+        </div>
+        <div class="slot" data-slot="6">
+          <h1>???</h1>
+          <p>???</p>
+          <p>Cost: <var id="cost6Counter">0</var></p>
+
+        </div>
+      </div>
     </div>
     <div id="gameOverDiv" hidden="false">
       <h1>GAME OVER</h1>
